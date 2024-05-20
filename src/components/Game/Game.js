@@ -17,19 +17,19 @@ function Game() {
     setGuessList([...guessList, guess]);
   };
 
-const hasLost = guessList.length === NUM_OF_GUESSES_ALLOWED;
-const hasWon = guessList.includes(answer);
-
-let gameComponent = hasLost
-  ? <SadBanner answer={answer} />
-  : hasWon
-    ? <HappyBanner numOfGuesses={guessList.length}/> 
-    : <GuessInput addGuess={addGuess} />;
+  const hasLost = guessList.length === NUM_OF_GUESSES_ALLOWED;
+  const hasWon = guessList.includes(answer);
 
   return (
     <>
       <GuessList guessList={guessList} />
-      {gameComponent}
+      {hasWon ? (
+        <HappyBanner numOfGuesses={guessList.length} />
+      ) : hasLost ? (
+        <SadBanner answer={answer} />
+      ) : (
+        <GuessInput addGuess={addGuess} />
+      )}
     </>
   );
 }
@@ -38,11 +38,15 @@ function GuessList({ guessList }) {
   return (
     <div className="guess-results">
       {range(NUM_OF_GUESSES_ALLOWED).map((index) => {
-          return (
+        return (
           <p key={index} className="guess">
-            {index < guessList.length ? <Guess word={guessList[index]} /> : <EmptyGuess />}
+            {index < guessList.length ? (
+              <Guess word={guessList[index]} />
+            ) : (
+              <EmptyGuess />
+            )}
           </p>
-          )
+        );
       })}
     </div>
   );
@@ -50,27 +54,20 @@ function GuessList({ guessList }) {
 
 function Guess({ word }) {
   const letterStatus = checkGuess(word, answer);
-  return (
-    letterStatus.map((char, index) => {
-      return (
-        <span key={index} className={`cell ${char.status}`}>
-          {char.letter}
-        </span>
-      )
-    })
-  )
+  return letterStatus.map((char, index) => {
+    return (
+      <span key={index} className={`cell ${char.status}`}>
+        {char.letter}
+      </span>
+    );
+  });
 }
 
 function EmptyGuess() {
-  return (
-    range(5).map((_, index) => {
-      return (
-        <span key={index} className="cell"></span>
-      )
-    })
-  )
+  return range(5).map((_, index) => {
+    return <span key={index} className="cell"></span>;
+  });
 }
-
 
 function GuessInput({ addGuess }) {
   const [guessInput, setGuessInput] = React.useState("");
@@ -97,17 +94,18 @@ function GuessInput({ addGuess }) {
   );
 }
 
-function HappyBanner({numOfGuesses}) {
+function HappyBanner({ numOfGuesses }) {
   return (
     <div className="happy banner">
       <p>
-        <strong>Congratulations!</strong> Got it in <strong>{numOfGuesses} guesses</strong>.
+        <strong>Congratulations!</strong> Got it in{" "}
+        <strong>{numOfGuesses} guesses</strong>.
       </p>
     </div>
-  )
+  );
 }
 
-function SadBanner({answer}) {
+function SadBanner({ answer }) {
   return (
     <div class="sad banner">
       <p>
