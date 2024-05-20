@@ -84,6 +84,7 @@ function GuessInput({ addGuess }) {
       <input
         id="guess-input"
         type="text"
+        required
         minLength={5}
         maxLength={5}
         value={guessInput}
