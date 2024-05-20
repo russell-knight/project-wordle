@@ -23,7 +23,7 @@ const hasWon = guessList.includes(answer);
 let gameComponent = hasLost
   ? <SadBanner answer={answer} />
   : hasWon
-    ? <HappyBanner /> 
+    ? <HappyBanner numOfGuesses={guessList.length}/> 
     : <GuessInput addGuess={addGuess} />;
 
   return (
@@ -97,11 +97,11 @@ function GuessInput({ addGuess }) {
   );
 }
 
-function HappyBanner() {
+function HappyBanner({numOfGuesses}) {
   return (
     <div className="happy banner">
       <p>
-        <strong>Congratulations!</strong> Got it in<strong>3 guesses</strong>.
+        <strong>Congratulations!</strong> Got it in <strong>{numOfGuesses} guesses</strong>.
       </p>
     </div>
   )
