@@ -14,14 +14,22 @@ function Game() {
   const [guessList, setGuessList] = useState([]);
 
   const addGuess = (guess) => {
-    const guessStatus = checkGuess(guess, answer);
-    setGuessList([...guessList, guessStatus]);
+    setGuessList([...guessList, guess]);
   };
+
+const hasLost = guessList.length === NUM_OF_GUESSES_ALLOWED;
+const hasWon = guessList.includes(answer);
+
+let gameComponent = hasLost
+  ? <SadBanner answer={answer} />
+  : hasWon
+    ? <HappyBanner /> 
+    : <GuessInput addGuess={addGuess} />;
 
   return (
     <>
       <GuessList guessList={guessList} />
-      <GuessInput addGuess={addGuess} />
+      {gameComponent}
     </>
   );
 }
@@ -29,10 +37,10 @@ function Game() {
 function GuessList({ guessList }) {
   return (
     <div className="guess-results">
-      {range(0, NUM_OF_GUESSES_ALLOWED).map((index) => {
+      {range(NUM_OF_GUESSES_ALLOWED).map((index) => {
           return (
           <p key={index} className="guess">
-            {index < guessList.length ? <Guess word={guessList[index] ?? undefined} /> : <EmptyGuess />}
+            {index < guessList.length ? <Guess word={guessList[index]} /> : <EmptyGuess />}
           </p>
           )
       })}
@@ -41,11 +49,12 @@ function GuessList({ guessList }) {
 }
 
 function Guess({ word }) {
+  const letterStatus = checkGuess(word, answer);
   return (
-    range(5).map((_, index) => {
+    letterStatus.map((char, index) => {
       return (
-        <span key={index} className={`cell ${word[index].status}`}>
-          {word?.letter?.[index]}
+        <span key={index} className={`cell ${char.status}`}>
+          {char.letter}
         </span>
       )
     })
